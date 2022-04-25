@@ -1,0 +1,40 @@
+{
+  "name": "spofity",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --cache --fix",
+      "git add"
+    ],
+    "src/**/*.{js,jsx}": [
+      "eslint --cache --fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^1.3.0",
+    "eslint": "^8.14.0",
+    "husky": "^4.3.8",
+    "lint-staged": "^12.4.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.5"
+  }
+}
