@@ -20,10 +20,10 @@ export const useAuth = (code: string) => {
         setRefreshToken(json.refreshToken);
         setExpiresIn(json.expiresIn);
 
-        window.history.pushState({}, null, "/");
+        window.history.pushState({}, "", "/");
       })
       .catch(() => {
-        window.location = "/";
+        window.location.replace("/");
       });
   }, [code]);
 
@@ -40,7 +40,7 @@ export const useAuth = (code: string) => {
           setExpiresIn(json.expiresIn);
         })
         .catch(() => {
-          window.location = "/";
+          window.location.replace("/");
         });
     }, (expiresIn - 60) * 1000);
 
