@@ -1,0 +1,16 @@
+{
+  "name": "spofity-login",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "Mauro Daprotis <maurodaprotis@gmail.com> (https://maurodaprotis.com)",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.2.3",
+    "spotify-web-api-node": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.27",
+    "@types/spotify-web-api-node": "^5.0.7"
+  }
+}
