@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 
 const { VITE_API_URL } = import.meta.env;
-console.log("🚀 ~ file: useAuth.ts ~ line 4 ~ API_URL", VITE_API_URL);
 
 const API_URL = VITE_API_URL;
 
 export const useAuth = (code: string) => {
-  console.log("🚀 ~ file: useAuth.ts ~ line 7 ~ useAuth ~ code", code);
   const [accessToken, setAccessToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
   const [expiresIn, setExpiresIn] = useState(0);
@@ -22,10 +20,10 @@ export const useAuth = (code: string) => {
         setRefreshToken(json.refreshToken);
         setExpiresIn(json.expiresIn);
 
-        window.history.pushState({}, null, "/");
+        window.history.pushState({}, "", "/");
       })
       .catch(() => {
-        // window.location.replace("/");
+        window.location.replace("/");
       });
   }, [code]);
 
@@ -42,7 +40,7 @@ export const useAuth = (code: string) => {
           setExpiresIn(json.expiresIn);
         })
         .catch(() => {
-          // window.location.replace("/");
+          window.location.replace("/");
         });
     }, (expiresIn - 60) * 1000);
 
