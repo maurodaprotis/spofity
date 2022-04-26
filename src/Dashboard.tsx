@@ -5,7 +5,7 @@ export const Dashboard = ({ code }: { code: string }) => {
   return (
     <div className="bg-green-500">
       <h1>Dashboard {code}</h1>
-      <h2>{accessToken}</h2>
+      <h2>Access Token:{accessToken}</h2>
     </div>
   );
 };

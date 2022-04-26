@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import useFetch from "./useFetch";
 
-const API_URL = "http://localhost:8888/.netlify/functions";
+const { VITE_API_URL } = import.meta.env;
+console.log("🚀 ~ file: useAuth.ts ~ line 4 ~ API_URL", VITE_API_URL);
+
+const API_URL = VITE_API_URL;
 
 export const useAuth = (code: string) => {
   console.log("🚀 ~ file: useAuth.ts ~ line 7 ~ useAuth ~ code", code);
@@ -20,10 +22,10 @@ export const useAuth = (code: string) => {
         setRefreshToken(json.refreshToken);
         setExpiresIn(json.expiresIn);
 
-        window.history.pushState({}, "", "/");
+        window.history.pushState({}, null, "/");
       })
       .catch(() => {
-        window.location.replace("/");
+        // window.location.replace("/");
       });
   }, [code]);
 
@@ -40,7 +42,7 @@ export const useAuth = (code: string) => {
           setExpiresIn(json.expiresIn);
         })
         .catch(() => {
-          window.location.replace("/");
+          // window.location.replace("/");
         });
     }, (expiresIn - 60) * 1000);
 
