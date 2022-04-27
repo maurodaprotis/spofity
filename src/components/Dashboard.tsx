@@ -11,7 +11,6 @@ export const Dashboard = () => {
       <Header />
       {selectedTab === "play" && <Player />}
       {selectedTab === "playlists" && <Playlists />}
-      {/* <Player /> */}
       <BottomNav active={selectedTab} setActive={setSelectedTab} />
     </div>
   );

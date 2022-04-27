@@ -1,5 +1,6 @@
 import { usePlaybackState } from "../hooks/usePlaybackState";
 import { AddToPlaylist } from "./AddToPlaylist";
+import { Controls } from "./Controls";
 import { PlayingOn } from "./PlayingOn";
 
 const NotPlaybackState = () => (
@@ -21,6 +22,7 @@ const NotPlaybackState = () => (
 
 const LoadingSkeleton = () => (
   <div className="animate-pulse flex flex-col w-full p-8 max-w-lg mx-auto items-center">
+    <h2 className="font-semibold text-xl mb-4 shadow-t">Now Playing</h2>
     <div className="h-56 w-56 rounded-sm bg-gray-200 mb-4 shadow-lg" />
     <div className="mb-4">
       <div className="bg-gray-300 h-2 w-16 py-2 rounded"></div>
@@ -36,7 +38,7 @@ const LoadingSkeleton = () => (
 );
 
 export const Player = () => {
-  const { data, error, isLoading } = usePlaybackState();
+  const { data, error, isLoading, refetch } = usePlaybackState();
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -58,9 +60,13 @@ export const Player = () => {
   const name = data?.item.name;
   const album = data?.item.album.name;
   const id = data?.item.id;
+  const isPlaying = data.is_playing;
 
   return (
     <div className="flex flex-col w-full p-8 max-w-lg mx-auto items-center">
+      <h2 className="font-semibold text-xl mb-4" onClick={() => refetch()}>
+        Now Playing
+      </h2>
       <img
         className="h-56 w-56 rounded-sm bg-gray-200 mb-4 shadow-lg"
         src={albumCover}
@@ -89,6 +95,7 @@ export const Player = () => {
         </div>
       </div>
       <PlayingOn device={data?.device} />
+      <Controls onChange={() => refetch()} isPlaying={isPlaying} />
     </div>
   );
 };

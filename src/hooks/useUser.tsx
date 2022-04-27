@@ -1,6 +1,6 @@
 import { User } from "../types/User";
-import { useSpotify } from "./useSpotify";
+import { useSpotifyRead } from "./useSpotifyQuery";
 
 export const useUser = () => {
-  return useSpotify<User>("/me");
+  return useSpotifyRead<User>("/me");
 };

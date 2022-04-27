@@ -8,4 +8,4 @@ export const CLIENT_ID = VITE_CLIENT_ID;
 
 export const REDIRECT_URI = VITE_REDIRECT_URI;
 
-export const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=streaming%20user-read-email%20user-read-private%20user-read-playback-state`;
+export const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=streaming%20user-read-email%20user-read-private%20user-read-playback-state%20user-modify-playback-state`;

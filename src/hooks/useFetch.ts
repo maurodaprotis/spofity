@@ -1,13 +1,13 @@
-/*
- * I used https://usehooks-ts.com/react-hook/use-fetch as a starting point for this hook
- * I added the "isLoading" state and avoid the .json() call when response as no content
- */
 import { useEffect, useReducer, useRef } from "react";
 
 interface State<T> {
   data?: T;
   error?: Error;
   isLoading: boolean;
+}
+
+interface StateWithRefetch<T> extends State<T> {
+  refetch: () => void;
 }
 
 type Cache<T> = { [url: string]: T };
@@ -18,7 +18,15 @@ type Action<T> =
   | { type: "fetched"; payload: T }
   | { type: "error"; payload: Error };
 
-function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
+/*
+ * I used https://usehooks-ts.com/react-hook/use-fetch as a starting point for this hook
+ * I added the "isLoading" state and avoid the .json() call when response as no content
+ * and added the refetch function
+ */
+function useFetch<T = unknown>(
+  url?: string,
+  options?: RequestInit
+): StateWithRefetch<T> {
   const cache = useRef<Cache<T>>({});
 
   // Used to prevent state update if the component is unmounted
@@ -46,41 +54,41 @@ function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
 
   const [state, dispatch] = useReducer(fetchReducer, initialState);
 
-  useEffect(() => {
+  const fetchData = async () => {
     // Do nothing if the url is not given
     if (!url) return;
 
-    const fetchData = async () => {
-      dispatch({ type: "loading" });
+    dispatch({ type: "loading" });
 
-      // If a cache exists for this url, return it
-      if (cache.current[url]) {
-        dispatch({ type: "fetched", payload: cache.current[url] });
-        return;
+    // If a cache exists for this url, return it
+    if (cache.current[url]) {
+      dispatch({ type: "fetched", payload: cache.current[url] });
+      return;
+    }
+
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(response.statusText);
       }
 
-      try {
-        const response = await fetch(url, options);
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+      const data =
+        response.status === 204
+          ? (undefined as unknown as T)
+          : ((await response.json()) as T);
+      cache.current[url] = data;
 
-        const data =
-          response.status === 204
-            ? (undefined as unknown as T)
-            : ((await response.json()) as T);
-        cache.current[url] = data;
+      if (cancelRequest.current) return;
 
-        if (cancelRequest.current) return;
+      dispatch({ type: "fetched", payload: data });
+    } catch (error) {
+      if (cancelRequest.current) return;
 
-        dispatch({ type: "fetched", payload: data });
-      } catch (error) {
-        if (cancelRequest.current) return;
+      dispatch({ type: "error", payload: error as Error });
+    }
+  };
 
-        dispatch({ type: "error", payload: error as Error });
-      }
-    };
-
+  useEffect(() => {
     void fetchData();
 
     // Use the cleanup function for avoiding a possibly...
@@ -91,7 +99,18 @@ function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
-  return state;
+  const refetch = () => {
+    // Do nothing if the url is not given
+    if (!url) return;
+
+    // Delete the cache for this url
+    cache.current[url] = undefined as unknown as T;
+
+    // Refetch
+    void fetchData();
+  };
+
+  return { ...state, refetch };
 }
 
 export default useFetch;

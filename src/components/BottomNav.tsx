@@ -9,7 +9,7 @@ export const BottomNav = ({
   setActive: (active: "play" | "playlists") => void;
 }) => {
   return (
-    <nav className="fixed bottom-0 flex items-center content-center w-full h-16">
+    <nav className="fixed bottom-0 flex items-center content-center w-full h-16 bg-white/30 backdrop-blur-md">
       <div className="flex space-x-4 items-center justify-center w-full h-full">
         <button
           className={`flex p-2 w-32 hover:text-neutral-600 ${

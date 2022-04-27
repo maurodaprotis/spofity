@@ -1,6 +1,6 @@
 import { PlaybackState } from "../types/PlaybackState";
-import { useSpotify } from "./useSpotify";
+import { useSpotifyRead } from "./useSpotifyQuery";
 
 export const usePlaybackState = () => {
-  return useSpotify<PlaybackState | undefined>("/me/player");
+  return useSpotifyRead<PlaybackState | undefined>("/me/player");
 };

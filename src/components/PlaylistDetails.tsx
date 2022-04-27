@@ -68,14 +68,18 @@ export const PlaylistDetails = ({ playlist }: { playlist: Playlist }) => {
               }}
             >
               <Pencil />
-              <span className="ml-2">Rename Playlist </span>
+              <span className="ml-2">
+                Rename<span className="hidden sm:inline"> Playlist</span>
+              </span>
             </button>
             <button
               className="flex items-center text-red-400 rounded px-2 hover:bg-red-100"
               onClick={() => removePlaylist(playlist)}
             >
               <Trash />
-              <span className="ml-2">Delete Playlist </span>
+              <span className="ml-2">
+                Delete<span className="hidden sm:inline"> Playlist</span>
+              </span>
             </button>
           </div>
         </div>

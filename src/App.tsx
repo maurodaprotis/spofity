@@ -1,5 +1,5 @@
 import { Dashboard } from "./components/Dashboard";
-import { AuthProvider } from "./context/UserProvider";
+import { AuthProvider } from "./context/AuthProvider";
 
 function App() {
   const code = new URLSearchParams(window.location.search).get("code");
