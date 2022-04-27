@@ -3,9 +3,25 @@ import SpotifyWebApi from "spotify-web-api-node";
 
 const { REDIRECT_URI, CLIENT_ID, CLIENT_SECRET } = process.env;
 
+/*
+ * Helper for getting 400 errors reponses
+ */
+const badRequest = (message: string) => {
+  return {
+    statusCode: 400,
+    body: JSON.stringify({
+      error: message,
+    }),
+  };
+};
+
 const handler: Handler = async (event) => {
   const parsedBody = JSON.parse(event.body);
   const { code } = parsedBody;
+
+  if (!code) {
+    return badRequest('"code" is required');
+  }
 
   const spotifyApi = new SpotifyWebApi({
     redirectUri: REDIRECT_URI,
@@ -18,12 +34,7 @@ const handler: Handler = async (event) => {
     .catch((err) => console.error(err));
 
   if (!data) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({
-        error: "Something went wrong",
-      }),
-    };
+    return badRequest("Something went wrong");
   }
 
   return {

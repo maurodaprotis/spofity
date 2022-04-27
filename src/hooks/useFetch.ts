@@ -1,9 +1,13 @@
-// Source code from https://usehooks-ts.com/react-hook/use-fetch
+/*
+ * I used https://usehooks-ts.com/react-hook/use-fetch as a starting point for this hook
+ * I added the "isLoading" state and avoid the .json() call when response as no content
+ */
 import { useEffect, useReducer, useRef } from "react";
 
 interface State<T> {
   data?: T;
   error?: Error;
+  isLoading: boolean;
 }
 
 type Cache<T> = { [url: string]: T };
@@ -23,17 +27,18 @@ function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
   const initialState: State<T> = {
     error: undefined,
     data: undefined,
+    isLoading: false,
   };
 
   // Keep state logic separated
   const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
     switch (action.type) {
       case "loading":
-        return { ...initialState };
+        return { ...initialState, isLoading: true };
       case "fetched":
-        return { ...initialState, data: action.payload };
+        return { ...initialState, isLoading: false, data: action.payload };
       case "error":
-        return { ...initialState, error: action.payload };
+        return { ...initialState, isLoading: false, error: action.payload };
       default:
         return state;
     }
@@ -60,8 +65,12 @@ function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
           throw new Error(response.statusText);
         }
 
-        const data = (await response.json()) as T;
+        const data =
+          response.status === 204
+            ? (undefined as unknown as T)
+            : ((await response.json()) as T);
         cache.current[url] = data;
+
         if (cancelRequest.current) return;
 
         dispatch({ type: "fetched", payload: data });

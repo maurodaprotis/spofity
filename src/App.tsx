@@ -1,14 +1,13 @@
-import { useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { Login } from "./Login";
-import { Dashboard } from "./Dashboard";
+import { Dashboard } from "./components/Dashboard";
+import { AuthProvider } from "./context/UserProvider";
 
 function App() {
   const code = new URLSearchParams(window.location.search).get("code");
 
   return (
-    <div className="App">{code ? <Dashboard code={code} /> : <Login />}</div>
+    <AuthProvider code={code}>
+      <Dashboard />
+    </AuthProvider>
   );
 }
 

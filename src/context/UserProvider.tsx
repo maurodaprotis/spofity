@@ -1,14 +1,29 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { Login } from "../components/Login";
+import { API_URL } from "../constants";
 
-const { VITE_API_URL } = import.meta.env;
+export const AuthContext = createContext<{ accessToken: string | null }>({
+  accessToken: null,
+});
 
-const API_URL = VITE_API_URL;
+/*
+ * The Auth Provider would act as a gateway for the login process.
+ */
+export const AuthProvider = ({
+  code,
+  children,
+}: {
+  code: string | null;
+  children: React.ReactNode;
+}) => {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [expiresIn, setExpiresIn] = useState<number | null>(null);
 
-export const useAuth = (code: string) => {
-  const [accessToken, setAccessToken] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
-  const [expiresIn, setExpiresIn] = useState(0);
-
+  /*
+   * Handle the login flow
+   * Once Spotify give us a valid code we can use it to obtain an access token
+   */
   useEffect(() => {
     fetch(`${API_URL}/login`, {
       method: "POST",
@@ -27,6 +42,9 @@ export const useAuth = (code: string) => {
       });
   }, [code]);
 
+  /*
+   * Handle token refresh when the access token expires
+   */
   useEffect(() => {
     if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
@@ -47,7 +65,13 @@ export const useAuth = (code: string) => {
     return () => clearInterval(interval);
   }, [refreshToken, expiresIn]);
 
-  return {
-    accessToken,
-  };
+  return (
+    <AuthContext.Provider
+      value={{
+        accessToken,
+      }}
+    >
+      {code && accessToken ? children : <Login />}
+    </AuthContext.Provider>
+  );
 };
